@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loopbase – free motion loops and VFX assets</title>
+<meta name="description" content="A free library of looping motion backgrounds, VFX elements and render loops.">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'] },
+      colors: { ink: '#0a0a0a', panel: '#141414', line: '#262626', mute: '#8a8a8a', glow: '#9aa8ff' }
+    } }
+  }
+</script>
+<style>
+  html { scroll-padding-top: 9rem; }
+  body { background: #0a0a0a; color: #f2f2f2; }
+  /* Masonry via CSS columns */
+  .masonry { column-count: 1; column-gap: 14px; }
+  @media (min-width: 560px)  { .masonry { column-count: 2; } }
+  @media (min-width: 900px)  { .masonry { column-count: 3; } }
+  @media (min-width: 1280px) { .masonry { column-count: 4; } }
+  .card { break-inside: avoid; margin-bottom: 14px; }
+  .card .meta { opacity: 0; transition: opacity .2s ease; }
+  .card:hover .meta, .card:focus-visible .meta { opacity: 1; }
+  @media (hover: none) { .card .meta { opacity: 1; } }
+  .pill-active { background: #f2f2f2; color: #0a0a0a; border-color: #f2f2f2; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  :focus-visible { outline: 2px solid #9aa8ff; outline-offset: 2px; }
+  #modal[data-open="true"] { display: flex; }
+  #modal[data-open="true"] .sheet { animation: pop .22s ease-out; }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    #modal[data-open="true"] .sheet { animation: none; }
+    .card .meta { transition: none; }
+  }
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<!-- HEADER -->
+<header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-ink/90 backdrop-blur">
+  <div class="mx-auto flex max-w-[1600px] items-center gap-4 px-4 py-3 sm:px-6">
+    <a href="index.html" class="flex shrink-0 items-center gap-2 font-semibold tracking-tight" aria-label="Loopbase home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="#f2f2f2" stroke-width="2"/>
+        <path d="M9.5 8.5v7l6-3.5-6-3.5Z" fill="#9aa8ff"/>
+      </svg>
+      <span class="text-lg">Loopbase</span>
+    </a>
+
+    <nav class="ml-2 hidden gap-1 sm:flex" aria-label="Main">
+      <a href="index.html" aria-current="page" class="rounded-full bg-panel px-4 py-1.5 text-sm font-medium text-white">Home</a>
+      <a href="explore.html" class="rounded-full px-4 py-1.5 text-sm font-medium text-mute transition hover:text-white">Explore</a>
+    </nav>
+
+    <form id="searchForm" role="search" class="relative mx-auto w-full max-w-xl" onsubmit="return false">
+      <svg class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-mute" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label for="search" class="sr-only">Search assets</label>
+      <input id="search" type="search" autocomplete="off" placeholder="Try ‘liquid chrome loop’"
+        class="w-full rounded-full border border-line bg-panel py-2.5 pl-11 pr-4 text-sm text-white placeholder:text-mute focus:border-glow focus:outline-none">
+    </form>
+
+    <span class="hidden shrink-0 text-sm text-mute lg:block"><span id="count">0</span> assets</span>
+  </div>
+
+  <!-- Category pills -->
+  <div class="mx-auto max-w-[1600px] px-4 pb-3 sm:px-6">
+    <div id="pills" class="no-scrollbar flex gap-2 overflow-x-auto" role="tablist" aria-label="Categories"></div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-[1600px] px-4 pb-20 pt-36 sm:px-6">
+
+  <!-- HERO -->
+  <section class="py-12 sm:py-20">
+    <h1 class="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+      Free motion loops for anything that needs to move.
+    </h1>
+    <p class="mt-5 max-w-xl text-base leading-relaxed text-mute sm:text-lg">
+      A growing library of seamless background loops, VFX elements and render loops. Preview them live, download them free, drop them into your edit.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <a href="#gallery" class="rounded-full bg-white px-6 py-3 text-sm font-semibold text-ink transition hover:bg-glow">Browse the library</a>
+      <a href="explore.html" class="rounded-full border border-line px-6 py-3 text-sm font-semibold text-white transition hover:border-mute">Explore collections</a>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" aria-label="Asset gallery">
+    <div id="grid" class="masonry"></div>
+    <div id="empty" class="hidden py-24 text-center">
+      <p class="text-lg font-medium">No assets match that search.</p>
+      <p class="mt-2 text-sm text-mute">Clear the search or pick another category.</p>
+      <button id="reset" class="mt-5 rounded-full border border-line px-5 py-2 text-sm hover:border-mute">Show all assets</button>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-line px-6 py-8 text-sm text-mute">
+  <div class="mx-auto flex max-w-[1600px] flex-wrap justify-between gap-3">
+    <span>Loopbase. Free assets for creators.</span>
+    <span>Hosted on GitHub Pages</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" data-open="false" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-8" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet relative flex max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-line bg-panel lg:flex-row">
+    <button id="mClose" class="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white hover:bg-black" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="flex min-h-0 flex-1 items-center justify-center bg-black">
+      <video id="mVideo" class="max-h-[60vh] w-full object-contain lg:max-h-[85vh]" controls loop muted playsinline></video>
+    </div>
+    <aside class="w-full shrink-0 overflow-y-auto p-6 lg:w-[360px]">
+      <p id="mCat" class="text-sm text-glow"></p>
+      <h2 id="mTitle" class="mt-1 text-2xl font-semibold tracking-tight"></h2>
+      <div id="mSpecs" class="mt-4 flex flex-wrap gap-2"></div>
+      <p id="mDesc" class="mt-5 text-sm leading-relaxed text-mute"></p>
+      <h3 class="mt-6 text-sm font-medium">Tags</h3>
+      <div id="mTags" class="mt-2 flex flex-wrap gap-2"></div>
+      <a id="mDownload" href="#" download target="_blank" rel="noopener"
+         class="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-glow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+        Download Asset
+      </a>
+      <p class="mt-3 text-center text-xs text-mute">Free for personal and commercial use.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ---------- DATA ----------
+   Placeholder clips so the layout runs out of the box.
+   Replace videoUrl / downloadUrl with files in /assets/videos/ (e.g. "assets/videos/loop-01.mp4").
+   `ratio` sets the card shape and drives the masonry rhythm. */
+const G = 'https://storage.googleapis.com/gtv-videos-bucket/sample/';
+const mediaItems = [
+  { id: 1,  title: 'Ember Drift',        category: 'VFX Loops',  resolution: '4K',    fps: 60, ratio: '16/9', videoUrl: G+'ForBiggerBlazes.mp4',      downloadUrl: G+'ForBiggerBlazes.mp4',      tags: ['fire','particles','overlay'],       description: 'Slow-rising embers over black. Screen-blend it over footage for warmth and atmosphere.' },
+  { id: 2,  title: 'Chrome Bloom',       category: 'Abstract',   resolution: '1080p', fps: 30, ratio: '3/4',  videoUrl: G+'ForBiggerEscapes.mp4',     downloadUrl: G+'ForBiggerEscapes.mp4',     tags: ['liquid','metal','gradient'],        description: 'A looping liquid-metal form that folds in on itself. Works as a title background.' },
+  { id: 3,  title: 'Neon Tunnel',        category: '3D Motion',  resolution: '4K',    fps: 24, ratio: '1/1',  videoUrl: G+'ForBiggerFun.mp4',         downloadUrl: G+'ForBiggerFun.mp4',         tags: ['tunnel','neon','render'],           description: 'Camera push through a ribbed neon tunnel. Seamless at 24 fps.' },
+  { id: 4,  title: 'Concrete Grain',     category: 'Textures',   resolution: '1080p', fps: 24, ratio: '4/5',  videoUrl: G+'ForBiggerJoyrides.mp4',    downloadUrl: G+'ForBiggerJoyrides.mp4',    tags: ['grain','film','texture'],           description: 'Rough concrete with a subtle film-grain shimmer, built for lower-third backplates.' },
+  { id: 5,  title: 'Smoke Veil',         category: 'VFX Loops',  resolution: '4K',    fps: 30, ratio: '16/9', videoUrl: G+'ForBiggerMeltdowns.mp4',   downloadUrl: G+'ForBiggerMeltdowns.mp4',   tags: ['smoke','atmosphere','overlay'],     description: 'Drifting smoke on a black background for screen or add blending.' },
+  { id: 6,  title: 'Prism Sweep',        category: 'Abstract',   resolution: '1080p', fps: 60, ratio: '9/16', videoUrl: G+'SubaruOutbackOnStreetAndDirt.mp4', downloadUrl: G+'SubaruOutbackOnStreetAndDirt.mp4', tags: ['prism','light','vertical'], description: 'Vertical colour sweeps with soft chromatic edges, sized for stories and shorts.' },
+  { id: 7,  title: 'Orbit Grid',         category: '3D Motion',  resolution: '4K',    fps: 60, ratio: '4/3',  videoUrl: G+'ElephantsDream.mp4',       downloadUrl: G+'ElephantsDream.mp4',       tags: ['grid','orbit','geometry'],          description: 'A wireframe grid rotating around a single axis. Clean, minimal and tileable.' },
+  { id: 8,  title: 'Dust & Scratches',   category: 'Textures',   resolution: '1080p', fps: 24, ratio: '16/9', videoUrl: G+'Sintel.mp4',               downloadUrl: G+'Sintel.mp4',               tags: ['dust','film','overlay'],            description: 'Organic dust and scratch overlay for a worn, analog look.' },
+  { id: 9,  title: 'Plasma Ribbon',      category: 'VFX Loops',  resolution: '4K',    fps: 30, ratio: '3/4',  videoUrl: G+'TearsOfSteel.mp4',         downloadUrl: G+'TearsOfSteel.mp4',         tags: ['plasma','energy','glow'],           description: 'Looping energy ribbon with a hot core. Add glow in post for extra punch.' },
+  { id: 10, title: 'Soft Gradient Flow', category: 'Abstract',   resolution: '1080p', fps: 30, ratio: '1/1',  videoUrl: G+'BigBuckBunny.mp4',         downloadUrl: G+'BigBuckBunny.mp4',         tags: ['gradient','calm','background'],     description: 'Slow-moving colour fields that stay calm behind text and UI.' },
+  { id: 11, title: 'Glass Cubes',        category: '3D Motion',  resolution: '4K',    fps: 24, ratio: '4/5',  videoUrl: G+'WeAreGoingOnBullrun.mp4',  downloadUrl: G+'WeAreGoingOnBullrun.mp4',  tags: ['glass','cubes','render'],           description: 'Refractive glass cubes tumbling in slow motion, rendered in 4K.' },
+  { id: 12, title: 'Static Noise Bed',   category: 'Textures',   resolution: '1080p', fps: 30, ratio: '16/9', videoUrl: G+'VolkswagenGTIReview.mp4',  downloadUrl: G+'VolkswagenGTIReview.mp4',  tags: ['noise','glitch','texture'],         description: 'Analog TV static with occasional signal tears. Great for glitch transitions.' }
+];
+
+const categories = ['All', 'VFX Loops', 'Abstract', '3D Motion', 'Textures'];
+
+/* ---------- STATE ---------- */
+const state = { category: 'All', query: '' };
+const $ = (s) => document.querySelector(s);
+const grid = $('#grid'), pillsEl = $('#pills'), emptyEl = $('#empty');
+
+/* Play only videos that are on screen */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(({ target, isIntersecting }) => {
+    if (isIntersecting) {
+      if (!target.src) target.src = target.dataset.src;
+      target.play().catch(() => {});
+    } else target.pause();
+  });
+}, { rootMargin: '200px' });
+
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+/* ---------- RENDER ---------- */
+function renderPills() {
+  pillsEl.innerHTML = categories.map((c) =>
+    `<button role="tab" aria-selected="${c === state.category}" data-cat="${esc(c)}"
+      class="shrink-0 rounded-full border border-line px-4 py-1.5 text-sm font-medium text-mute transition hover:text-white ${c === state.category ? 'pill-active !text-ink' : ''}">${esc(c)}</button>`
+  ).join('');
+}
+
+function filtered() {
+  const q = state.query.trim().toLowerCase();
+  return mediaItems.filter((m) =>
+    (state.category === 'All' || m.category === state.category) &&
+    (!q || [m.title, m.category, m.resolution, ...m.tags].join(' ').toLowerCase().includes(q))
+  );
+}
+
+function renderGrid() {
+  io.disconnect();
+  const items = filtered();
+  $('#count').textContent = items.length;
+  emptyEl.classList.toggle('hidden', items.length > 0);
+  grid.innerHTML = items.map((m) => `
+    <article class="card group relative cursor-pointer overflow-hidden rounded-xl border border-line bg-panel" tabindex="0" role="button" data-id="${m.id}" aria-label="Open ${esc(m.title)}">
+      <video data-src="${esc(m.videoUrl)}" style="aspect-ratio:${m.ratio}" class="block w-full object-cover" autoplay muted loop playsinline preload="none"></video>
+      <div class="meta absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/85 via-black/10 to-black/40 p-3">
+        <div class="flex gap-2">
+          <span class="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-ink">${esc(m.resolution)}</span>
+          <span class="rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-medium backdrop-blur">${m.fps} fps</span>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold">${esc(m.title)}</h3>
+          <div class="mt-1.5 flex flex-wrap gap-1.5">
+            <span class="rounded-full border border-white/25 px-2 py-0.5 text-xs">${esc(m.category)}</span>
+            ${m.tags.slice(0, 2).map((t) => `<span class="rounded-full border border-white/15 px-2 py-0.5 text-xs text-white/70">#${esc(t)}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </article>`).join('');
+  grid.querySelectorAll('video').forEach((v) => io.observe(v));
+}
+
+/* ---------- MODAL ---------- */
+const modal = $('#modal'), mVideo = $('#mVideo');
+let lastFocus = null;
+
+function openModal(id) {
+  const m = mediaItems.find((x) => x.id === Number(id));
+  if (!m) return;
+  lastFocus = document.activeElement;
+  mVideo.src = m.videoUrl;
+  mVideo.muted = true;
+  mVideo.play().catch(() => {});
+  $('#mCat').textContent = m.category;
+  $('#mTitle').textContent = m.title;
+  $('#mDesc').textContent = m.description;
+  $('#mSpecs').innerHTML = [m.resolution, m.fps + ' fps', 'Loop'].map((s) =>
+    `<span class="rounded-full border border-line px-3 py-1 text-xs font-medium">${esc(s)}</span>`).join('');
+  $('#mTags').innerHTML = m.tags.map((t) =>
+    `<button data-tag="${esc(t)}" class="rounded-full bg-black px-3 py-1 text-xs text-mute hover:text-white">#${esc(t)}</button>`).join('');
+  const dl = $('#mDownload');
+  dl.href = m.downloadUrl;
+  dl.setAttribute('download', m.title.toLowerCase().replace(/\W+/g, '-') + '.mp4');
+  modal.dataset.open = 'true';
+  document.body.style.overflow = 'hidden';
+  $('#mClose').focus();
+}
+
+function closeModal() {
+  modal.dataset.open = 'false';
+  mVideo.pause();
+  mVideo.removeAttribute('src');
+  mVideo.load();
+  document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+
+/* ---------- EVENTS ---------- */
+pillsEl.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-cat]');
+  if (!b) return;
+  state.category = b.dataset.cat;
+  renderPills(); renderGrid();
+});
+
+$('#search').addEventListener('input', (e) => { state.query = e.target.value; renderGrid(); });
+
+$('#reset').addEventListener('click', () => {
+  state.category = 'All'; state.query = ''; $('#search').value = '';
+  renderPills(); renderGrid();
+});
+
+grid.addEventListener('click', (e) => { const c = e.target.closest('.card'); if (c) openModal(c.dataset.id); });
+grid.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const c = e.target.closest('.card');
+  if (c) { e.preventDefault(); openModal(c.dataset.id); }
+});
+
+$('#mClose').addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+$('#mTags').addEventListener('click', (e) => {
+  const t = e.target.closest('[data-tag]');
+  if (!t) return;
+  closeModal();
+  state.query = t.dataset.tag; state.category = 'All';
+  $('#search').value = state.query;
+  renderPills(); renderGrid();
+  document.getElementById('gallery').scrollIntoView();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (modal.dataset.open !== 'true') return;
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Tab') { /* keep focus inside the modal */
+    const f = [...modal.querySelectorAll('button, a[href], video[controls]')].filter((el) => !el.disabled);
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+/* Press "/" to focus search */
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && modal.dataset.open !== 'true') {
+    e.preventDefault(); $('#search').focus();
+  }
+});
+
+renderPills();
+renderGrid();
+</script>
+</body>
+</html>
